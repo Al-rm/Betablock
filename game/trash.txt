@@ -1,0 +1,78 @@
+ generatePattern(level) {
+        let blocks = [];
+        let numBlocks = level * 50;
+        let patternType = Math.floor(Math.random() * 3); // Randomly pick a pattern type
+    
+        if (patternType === 0) {
+            blocks = generateCirclePattern(numBlocks, level);
+        } else if (patternType === 1) {
+            blocks = generateSpiralPattern(numBlocks, level);
+        } else {
+            blocks = generateWavePattern(numBlocks, level);
+        }
+    
+        return blocks;
+    }
+    
+    generateCirclePattern(numBlocks, level) {
+        let blocks = [];
+        let centerX = screenRes[0] / 2;
+        let centerY = screenRes[1] / 4;
+        let radius = screenRes[0] / 4;
+    
+        for (let i = 0; i < numBlocks; i++) {
+            let angle = TWO_PI / numBlocks * i;
+            let x = centerX + cos(angle) * radius;
+            let y = centerY + sin(angle) * radius;
+            let hitsRequired = Math.min(Math.floor(Math.random() * level) + 1, 7);
+            let newBlock = new Block(x, y, hitsRequired);
+    
+            let overlapping = blocks.some(block => newBlock.isOverlapping(block));
+            if (!overlapping) {
+                blocks.push(newBlock);
+            }
+        }
+    
+        return blocks;
+    }
+    
+    generateSpiralPattern(numBlocks, level) {
+        let blocks = [];
+        let centerX = screenRes[0] / 2;
+        let centerY = screenRes[1] / 4;
+    
+        for (let i = 0; i < numBlocks; i++) {
+            let angle = 0.1 * i;
+            let x = centerX + (1 + 5 * angle) * cos(angle);
+            let y = centerY + (1 + 5 * angle) * sin(angle);
+            let hitsRequired = Math.min(Math.floor(Math.random() * level) + 1, 7);
+            let newBlock = new Block(x, y, hitsRequired);
+    
+            let overlapping = blocks.some(block => newBlock.isOverlapping(block));
+            if (!overlapping) {
+                blocks.push(newBlock);
+            }
+        }
+    
+        return blocks;
+    }
+    
+    generateWavePattern(numBlocks, level) {
+        let blocks = [];
+        let amplitude = screenRes[1] / 8;
+        let frequency = 0.1;
+    
+        for (let i = 0; i < numBlocks; i++) {
+            let x = screenRes[0] * (i / numBlocks);
+            let y = screenRes[1] / 4 + amplitude * sin(frequency * x);
+            let hitsRequired = Math.min(Math.floor(Math.random() * level) + 1, 7);
+            let newBlock = new Block(x, y, hitsRequired);
+    
+            let overlapping = blocks.some(block => newBlock.isOverlapping(block));
+            if (!overlapping) {
+                blocks.push(newBlock);
+            }
+        }
+    
+        return blocks;
+    }   
